@@ -179,10 +179,23 @@ global_simulation_context = SimulationContext()
 global_simulation_context.add(global_default_kettle)
 global_simulation_context.add(global_default_cup)
 
+def intro_exercise00(context):
+	context.say("This exercise is to convey the basics of procedural programming")
+
+def intro_exercise01(context):
+	context.say("This exercise is to convey the basics of branching, watch out")
+	context.say("some actions from the last exercise might go wrong now!")
+	context.fetch("Kettle").fill_completely()
+
+def intro_exercise02(context):
+	context.say("This exercise is to teach the basics of loops or 'repetitions'")
+	context.say("'Simulated-You' is feeling very thoughtful today, standing")
+	context.say("around daydreaming while the kettle boils could be troublesome!")
+
 challenges = {
-	'basics': ({}, None),
-	'decisions': ({}, lambda context: context.fetch("Kettle").fill_completely()),
-	'repetitions': ({'boredom': True}, None)
+	'basics': ({}, intro_exercise00),
+	'decisions': ({}, intro_exercise01),
+	'repetitions': ({'boredom': True}, intro_exercise02)
 }
 
 def simulation_error(description):
@@ -201,6 +214,7 @@ def start_simulation(simulation_title):
 		
 		if configurator is not None:
 			configurator(global_simulation_context)
+			global_simulation_context.horizontal_line()
 	else:
 		simulation_error("Could not start xTreme Kettle Simulator, invalid simulation title '%s'!" % (simulation_title,))
 
@@ -242,16 +256,40 @@ def turn_on_kettle():
 	else:
 		global_simulation_context.say("The kettle is already turned on, but you poke the button anyway. You feel reassured.")
 
+def kettle_is_boiled(silent = False):
+	global global_simulation_context
+	global global_default_kettle
+	
+	if not silent:
+		if global_default_kettle.is_boiled():
+			global_simulation_context.say("You check the kettle and it seems to have boiled!")
+		else:
+			global_simulation_context.say("You check the kettle and, sadly, it has not boiled yet.")
+	
+	return global_default_kettle.is_boiled()
+
 def wait_until_kettle_boiled():
 	global global_simulation_context
 	global global_default_kettle
 	
 	global_simulation_context.say("You stare vacantly into space, waiting for the kettle.")
 	
+	if global_simulation_context.should_challenge("boredom"):
+		simulation_error(
+"""You have an existential crisis while daydreaming and abandon your tea.
+Perhaps you could try passing the time by twiddling your thumbs instead?""")
+	
 	while not global_default_kettle.is_boiled():
 		global_simulation_context.tick()
 	
 	global_simulation_context.say("The kettle has finished boiling!")
+
+def twiddle_thumbs(duration = 10):
+	global global_simulation_context
+	
+	global_simulation_context.say("You twiddle your thumbs for a bit.")
+	for step in range(duration):
+		global_simulation_context.tick()
 
 def pour_water_into_cup():
 	global global_simulation_context
