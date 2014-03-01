@@ -7,6 +7,14 @@ BOILING_TEMPERATURE = 100
 DANGER_TEMPERATURE = 45 # guesstimate at when something hurts
 DRINKABLE_TEMPERATURE = 60 # according to like the NHS, seems hot!
 
+class Challenge(object):
+	def __init__(self, flags = {}):
+		self.flags = flags
+	def configure(self, context):
+		pass
+	def evaluate(self, context):
+		pass
+
 class SimulationException(Exception):
 	pass
 
@@ -15,7 +23,8 @@ class SimulationContext(object):
 		self.tick_count = 0
 		self.objects = []
 		self.running = False
-		self.challenges = None
+		self.challenge = None
+		self.tick_delay = 0.05
 	def fetch(self, object_name):
 		for obj in self.objects:
 			if obj.name == object_name:
@@ -40,16 +49,19 @@ class SimulationContext(object):
 		self.horizontal_line()
 		sys.exit(-1)
 	def __del__(self):
+		if self.challenge is not None:
+			self.horizontal_line()
+			self.challenge.evaluate(self)
 		self.goodbye()
 	def should_challenge(self, name):
-		if self.challenges is not None:
-			return (name in self.challenges.keys())
+		if self.challenge is not None:
+			return (name in self.challenge.flags.keys())
 		return False
 	def tick(self):
 		for obj in self.objects:
 			obj.tick(self)
 		self.tick_count += 1
-		time.sleep(0.01)
+		time.sleep(self.tick_delay)
 	def add(self, obj):
 		self.objects.append(obj)
 	def say(self, message, with_time=True, with_newline=True):
@@ -60,6 +72,14 @@ class SimulationContext(object):
 			print(display)
 		else:
 			print(display, end='')
+	def run(self, challenge):
+		self.introduction()
+		
+		self.challenge = challenge
+		
+		challenge.configure(self)
+		
+		global_simulation_context.horizontal_line()
 
 class SimulationObject(object):
 	def __init__(self, name):
@@ -77,11 +97,12 @@ class ContainerObject(object):
 	def __init__(self, capacity):
 		self.capacity = capacity
 		self.contains = 0
+	def space_remaining(self):
+		return (self.capacity - self.contains)
 	def accept(self, amount):
-		space = self.capacity - self.contains
 		accepted = amount
-		if amount > space:
-			accepted = self.capacity - self.contains
+		if amount > self.space_remaining():
+			accepted = self.space_remaining()
 			self.contains = self.capacity
 			raise ContainerOverfilledException()
 		else:
@@ -95,6 +116,8 @@ class ContainerObject(object):
 		return dispensed
 	def is_empty(self):
 		return (self.contains <= 0)
+	def is_full(self):
+		return (self.contains >= self.capacity)
 
 class KettleException(SimulationException):
 	pass
@@ -125,6 +148,8 @@ class Kettle(SimulationObject):
 		return (self.temperature >= BOILING_TEMPERATURE)
 	def is_empty(self):
 		return self.water.is_empty()
+	def is_full(self):
+		return self.water.is_full()
 	def turn_on(self):
 		self.turned_on = True
 	def turn_off(self):
@@ -171,31 +196,53 @@ class Cup(SimulationObject):
 				simulation_error("Argh! Really hot water overfills the cup!")
 			else:
 				simulation_error("Argh! Water overfilfs the cup! Luckily it's not too hot.")
+	def is_empty(self):
+		return self.contents.is_empty()
+	def is_full(self):
+		return self.contents.is_full()
 
-global_default_kettle = Kettle()
-global_default_cup = Cup()
+global_default_kettle = Kettle("DefaultKettle")
+global_default_cup = Cup("DefaultCup")
 
 global_simulation_context = SimulationContext()
 global_simulation_context.add(global_default_kettle)
 global_simulation_context.add(global_default_cup)
 
-def intro_exercise00(context):
-	context.say("This exercise is to convey the basics of procedural programming")
+class ExerciseToFillCup(Challenge):
+	def __init__(self, flags = {}):
+		Challenge.__init__(self, flags)
+	def evaluate(self, context):
+		if context.fetch("DefaultCup").is_full():
+			context.say("You successfully filled the cup! Hurrah")
+		else:
+			context.say("Unfortunately you didn't fill the cup.")
 
-def intro_exercise01(context):
-	context.say("This exercise is to convey the basics of branching, watch out")
-	context.say("some actions from the last exercise might go wrong now!")
-	context.fetch("Kettle").fill_completely()
+class Exercise00(ExerciseToFillCup):
+	def __init__(self):
+		ExerciseToFillCup.__init__(self)
+	def configure(self, context):
+		context.say("This exercise is to convey the basics of procedural programming")
 
-def intro_exercise02(context):
-	context.say("This exercise is to teach the basics of loops or 'repetitions'")
-	context.say("'Simulated-You' is feeling very thoughtful today, standing")
-	context.say("around daydreaming while the kettle boils could be troublesome!")
+class Exercise01(ExerciseToFillCup):
+	def __init__(self):
+		ExerciseToFillCup.__init__(self)
+	def configure(self, context):
+		context.say("This exercise is to convey the basics of branching, watch out")
+		context.say("some actions from the last exercise might go wrong now!")
+		context.fetch("DefaultKettle").fill_completely()
 
-challenges = {
-	'basics': ({}, intro_exercise00),
-	'decisions': ({}, intro_exercise01),
-	'repetitions': ({'boredom': True}, intro_exercise02)
+class Exercise02(ExerciseToFillCup):
+	def __init__(self):
+		ExerciseToFillCup.__init__(self, {'boredom':True})
+	def configure(self, context):
+		context.say("This exercise is to teach the basics of loops or 'repetitions'")
+		context.say("'Simulated-You' is feeling very thoughtful today, standing")
+		context.say("around daydreaming while the kettle boils could be troublesome!")
+
+exercises = {
+	'basics': Exercise00(),
+	'decisions': Exercise01(),
+	'repetitions': Exercise02()
 }
 
 def simulation_error(description):
@@ -206,15 +253,10 @@ def simulation_error(description):
 def start_simulation(simulation_title):
 	global global_simulation_context
 	
-	if simulation_title in challenges.keys():
-		challenge_settings, configurator = challenges[simulation_title]
-		global_simulation_context.challenges = challenge_settings
+	if simulation_title in exercises.keys():
+		challenge = exercises[simulation_title]
 		
-		global_simulation_context.introduction()
-		
-		if configurator is not None:
-			configurator(global_simulation_context)
-			global_simulation_context.horizontal_line()
+		global_simulation_context.run(challenge)
 	else:
 		simulation_error("Could not start xTreme Kettle Simulator, invalid simulation title '%s'!" % (simulation_title,))
 
