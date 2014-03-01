@@ -1,0 +1,20 @@
+
+Yellow Lama
+-----------
+
+
+This project is for exploring the creation of some educational material
+for teaching programming.
+
+Initially the targetted age group is adults, in a workshop setting with
+a small number of students and demonstrators.
+
+Currently the plan is a parallel approach involving high level, abstract
+programming skills being acquired through a 'simple' high level
+language such as python (Python 3). More concrete, 'implementation'
+knowledge will be taught with C++ (C++11 onward).
+
+Using simple exercises that build in complexity up to occasional
+'challenge' tasks that are less guided but leave room for exploratory
+learning.
+
