@@ -1,0 +1,18 @@
+
+flow control
+  branching
+  loops
+
+input/output
+	command line IO
+	file IO
+	simplified graphical output
+
+variables
+	primitive types
+	declaration/initialisation/assignment/access
+	objects
+		properties
+		message passing (method calls)
+		polymorphism/inheritance/abstract classes/(interfaces?)
+
