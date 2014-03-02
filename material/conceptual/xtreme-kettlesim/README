@@ -1,0 +1,22 @@
+
+XTREME KETTLESIM
+----------------
+
+
+These exercises involve simple 'boiling a kettle' programs that
+illustrate basic programming concepts.
+
+Due to the nature of Git and Python's "import" behaviour, before
+attempting each exercise it is important to create a symlink to the
+kettlesim library inside the exercise folder.
+
+For example, exercise 00 is in this folder:
+	yellow-lama/material/conceptual/xtreme-kettlesim/exercise00
+The kettlesim library is in:
+	yellow-lama/material/conceptual/xtreme-kettlesim/kettlesim
+
+Using "ln" to create a symlink in the exercise00 folder to point to
+the kettlesim folder. If you navigate into the exercise00 folder this
+can be achieved by writing:
+
+	ln -s ../kettlesim kettlesim
