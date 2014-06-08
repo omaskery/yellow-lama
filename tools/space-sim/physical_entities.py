@@ -1,5 +1,5 @@
 
-from math_utils import Vector, Quarternion
+from math_utils import Vector, Quaternion
 import entities
 
 class PhysicalEntity(entities.Entity):
@@ -9,8 +9,8 @@ class PhysicalEntity(entities.Entity):
 		
 		self.pos = Vector(0.0, 0.0, 0.0)
 		self.vel = Vector(0.0, 0.0, 0.0)
-		self.rot = Quarternion(0.0, 0.0, 0.0, 0.0)
-		self.rotvel = Quarternion(0.0, 0.0, 0.0, 0.0)
+		self.rot = Quaternion.from_angle_and_axis(0.0, Vector(0, 0, 1))
+		self.rotvel = Quaternion.from_angle_and_axis(0.0, Vector(0.0, 0.0, 1.0))
 		self.radius = 1.0
 		self.mass = 1.0
 	
@@ -25,12 +25,20 @@ class PhysicalEntity(entities.Entity):
 		acceleration = (force / self.mass) * dt
 		self.vel = self.vel + acceleration
 	
+	def apply_moment(self, angular_acceleration, dt):
+		#print "angular e:", angular_acceleration.as_tuple()
+		q = Quaternion.from_euler_rotation(angular_acceleration)
+		#print "angular q:", q.as_tuple()
+		self.rotvel = self.rotvel * q ** 2
+		#print "rotvel  q:", self.rotvel.as_tuple()
+		#print "rotvel  e:", self.rotvel.to_euler_angle().as_tuple()
+	
 	def load(self, blob):
 		entities.Entity.load(self, blob)
 		self.pos = Vector.from_list(blob['physical.pos'])
 		self.vel = Vector.from_list(blob['physical.vel'])
-		self.rot = Quarternion.from_list(blob['physical.rot'])
-		self.rotvel = Quarternion.from_list(blob['physical.rotvel'])
+		self.rot = Quaternion.from_list(blob['physical.rot'])
+		self.rotvel = Quaternion.from_list(blob['physical.rotvel'])
 		self.radius = blob['physical.radius']
 		self.mass = blob['physical.mass']
 	
