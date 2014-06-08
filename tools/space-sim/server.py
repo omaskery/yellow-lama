@@ -2,8 +2,11 @@
 
 import threading
 import asyncore
+import logging
 import socket
 import signal
+
+logging.basicConfig(level=logging.DEBUG)
 
 from math_utils import Vector
 
@@ -230,6 +233,8 @@ def main():
 		
 		ship.pos = Vector(149.59787E9 + 6378.1E3 + 370E3, 0, 0) # around the earth
 		ship.vel.y = -29.77E3 + -7.7E3 # Hopefully in orbit
+		ship.radius = 8 # metres
+		ship.mass = 2E3 # kg
 		
 		sim.add_entity(ship)
 	

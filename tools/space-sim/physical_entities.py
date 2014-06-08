@@ -1,5 +1,5 @@
 
-from math_utils import Vector
+from math_utils import Vector, Quarternion
 import entities
 
 class PhysicalEntity(entities.Entity):
@@ -9,7 +9,8 @@ class PhysicalEntity(entities.Entity):
 		
 		self.pos = Vector(0.0, 0.0, 0.0)
 		self.vel = Vector(0.0, 0.0, 0.0)
-		self.rot = Vector(0.0, 0.0, 0.0)
+		self.rot = Quarternion(0.0, 0.0, 0.0, 0.0)
+		self.rotvel = Quarternion(0.0, 0.0, 0.0, 0.0)
 		self.radius = 1.0
 		self.mass = 1.0
 	
@@ -18,6 +19,7 @@ class PhysicalEntity(entities.Entity):
 	
 	def think(self, dt):
 		self.pos = self.pos + (self.vel * dt)
+		self.rot = self.rot * (self.rotvel ** dt)
 	
 	def accelerate(self, force, dt):
 		acceleration = (force / self.mass) * dt
@@ -25,9 +27,10 @@ class PhysicalEntity(entities.Entity):
 	
 	def load(self, blob):
 		entities.Entity.load(self, blob)
-		self.pos = Vector.FromList(blob['physical.pos'])
-		self.vel = Vector.FromList(blob['physical.vel'])
-		self.rot = Vector.FromList(blob['physical.rot'])
+		self.pos = Vector.from_list(blob['physical.pos'])
+		self.vel = Vector.from_list(blob['physical.vel'])
+		self.rot = Quarternion.from_list(blob['physical.rot'])
+		self.rotvel = Quarternion.from_list(blob['physical.rotvel'])
 		self.radius = blob['physical.radius']
 		self.mass = blob['physical.mass']
 	
@@ -36,6 +39,7 @@ class PhysicalEntity(entities.Entity):
 		blob['physical.pos'] = self.pos.as_list()
 		blob['physical.vel'] = self.vel.as_list()
 		blob['physical.rot'] = self.rot.as_list()
+		blob['physical.rotvel'] = self.rotvel.as_list()
 		blob['physical.radius'] = self.radius
 		blob['physical.mass'] = self.mass
 		return blob

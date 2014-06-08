@@ -50,6 +50,12 @@ class KnownPlanet(KnownBody):
 		
 		self.name = name
 
+class Transmission(object):
+	
+	def __init__(self, position, radius):
+		self.position = position
+		self.radius = radius
+
 class Observatory(asyncore.dispatcher_with_send):
 	
 	def __init__(self,  host, port):
@@ -74,6 +80,7 @@ class Observatory(asyncore.dispatcher_with_send):
 		self.bodies = []
 		self.planets = {}
 		self.general = {}
+		self.transmissions = []
 		
 		self.colours = {
 			'Sol' : (255, 255, 0),
@@ -245,7 +252,7 @@ def main():
 	poll_rate = 20
 	next_poll = now_plus(1.0 / poll_rate)
 	
-	zoom_rate = 2
+	zoom_rate = 1.05
 	large_zoom_rate = zoom_rate * 10
 	
 	while observatory.running:
