@@ -84,8 +84,13 @@ class GyroscopeComponent(ship_component.ShipComponent):
 		
 	def think(self, dt):
 		if self.last_rotation is not None:
+			#print "gyroscope:"
+			#print "last:", self.last_rotation
+			#print "ship:", self.ship.rot
 			delta = self.ship.rot.difference(self.last_rotation)
+			#print "delta:", delta
 			self.latest_value = delta.to_euler_angle()
+			#print "delta:", self.latest_value
 		self.last_rotation = Quaternion.from_list(self.ship.rot.as_list())
 	
 	def latest(self):

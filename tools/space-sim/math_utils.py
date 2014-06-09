@@ -61,6 +61,9 @@ class Quaternion(object):
 	def __init__(self, w, x, y, z):
 		self.w = w
 		self.v = Vector(x, y, z)
+	
+	def __str__(self):
+		return "(%02.2f, %02.2f, %02.2f, %02.2f)" % (self.w, self.v.x, self.v.y, self.v.z)
 		
 	def inverse(self):
 		return Quaternion(self.w, -self.v.x, -self.v.y, -self.v.z)
