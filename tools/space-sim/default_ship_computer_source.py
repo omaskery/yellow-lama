@@ -67,8 +67,8 @@ class MyProgram(computer.Program):
 				self.state = MyProgram.STATE_ROTATING
 				#raw_input("...")
 		elif self.state == MyProgram.STATE_ROTATING:
-			if self.stat_counter >= 1.0:
-				print "rotation z:", (self.rotation.z / math.pi * 180.0)
+			if self.stat_counter >= 0.2:
+				print "rotation:", (self.rotation / math.pi * 180.0)
 				self.stat_counter = 0.0
 			if self.rotation.z <= (-170.0 / 180.0 * math.pi):
 				self.computer.write('maneuver', 'thrust', ('rot-rcs-ryr', 1E2))

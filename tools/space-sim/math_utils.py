@@ -13,7 +13,7 @@ class Vector(object):
 		self.z = z
 	
 	def __str__(self):
-		return "(%02.2f, %02.2f, %02.2f)" % (self.x, self.y, self.z)
+		return "(%02.3f, %02.3f, %02.3f)" % (self.x, self.y, self.z)
 	
 	def magnitude2(self):
 		return (self.x**2) + (self.y**2) + (self.z**2)
@@ -63,7 +63,7 @@ class Quaternion(object):
 		self.v = Vector(x, y, z)
 	
 	def __str__(self):
-		return "(%02.2f, %02.2f, %02.2f, %02.2f)" % (self.w, self.v.x, self.v.y, self.v.z)
+		return "(%02.3f, %02.3f, %02.3f, %02.3f)" % (self.w, self.v.x, self.v.y, self.v.z)
 		
 	def inverse(self):
 		return Quaternion(self.w, -self.v.x, -self.v.y, -self.v.z)

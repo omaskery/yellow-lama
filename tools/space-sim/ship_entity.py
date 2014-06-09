@@ -41,7 +41,9 @@ class InertiaPeripheral(computer.PeripheralInterface):
 		return self.accel.latest()
 	
 	def get_gyroscope_data(self, value_name):
-		return self.gyro.latest()
+		result = self.gyro.latest()
+		#print "get gyro data:", result
+		return result
 
 class AccelerometerComponent(ship_component.ShipComponent):
 	
@@ -89,11 +91,13 @@ class GyroscopeComponent(ship_component.ShipComponent):
 			#print "ship:", self.ship.rot
 			delta = self.ship.rot.difference(self.last_rotation)
 			#print "delta:", delta
-			self.latest_value = delta.to_euler_angle()
+			as_euler = delta.to_euler_angle()
+			self.latest_value = self.ship.rot.inverse().rotate_vector(as_euler)
 			#print "delta:", self.latest_value
 		self.last_rotation = Quaternion.from_list(self.ship.rot.as_list())
 	
 	def latest(self):
+		#print "fetching latest:", self.latest_value
 		return self.latest_value
 	
 	def save(self):
@@ -188,7 +192,7 @@ class ThrusterComponent(ship_component.ShipComponent):
 		blob['direction'] = self.direction.as_list()
 		blob['max_force'] = self.max_force
 		blob['thrust'] = self.thrust
-		blob['offset'] = self.offset
+		blob['offset'] = self.offset.as_list()
 	
 	def load(self, blob):
 		ship_component.ShipComponent.load(self, blob)
@@ -202,7 +206,7 @@ class ShipEntity(pe.PhysicalEntity):
 	def __init__(self, category_uid, instance_uid, sim):
 		pe.PhysicalEntity.__init__(self, category_uid, instance_uid, sim)
 		
-		self.rot *= Quaternion.from_angle_and_axis(math.pi, Vector(0,0,1))
+		#self.rot *= Quaternion.from_angle_and_axis(math.pi, Vector(0,0,1))
 		
 		self.components = {}
 		
@@ -254,7 +258,7 @@ class ShipEntity(pe.PhysicalEntity):
 			component.think(dt)
 		
 		thrust = sum([thruster.linear_thrust() for thruster in self.thrusters], Vector(0,0,0))
-		self.accelerate(self.rot.rotate_vector(thrust), dt)
+		self.accelerate(self.rot.inverse().rotate_vector(thrust), dt)
 		
 		torque = sum([thruster.angular_acceleration() for thruster in self.thrusters], Vector(0,0,0))
 		#print "net torque:", torque.as_tuple()
