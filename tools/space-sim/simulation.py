@@ -19,8 +19,8 @@ class Simulation(object):
 		self.running = True
 		
 		self.sim_time = 0
-		#self.sim_rate = 200
-		self.sim_rate = 107.0
+		self.sim_rate = 1000
+		#self.sim_rate = 107.0
 		self.sim_dt = 1.0 / self.sim_rate
 		#self.sim_dt = 10000
 		self.sim_tick = now_plus(1.0 / self.sim_rate)
