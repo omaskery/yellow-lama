@@ -4,7 +4,8 @@ CC=clang++
 TARGET=space-sim-two
 
 SOURCES=\
-	src/main.cpp
+	src/main.cpp\
+	src/spacesim/networking/system_message.cpp
 
 LIBS=\
 	-lboost_system

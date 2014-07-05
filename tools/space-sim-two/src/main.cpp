@@ -10,83 +10,10 @@
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/asio.hpp>
 
-using boost::asio::ip::tcp;
+#include "spacesim/networking/system_message.hpp"
 
-class SystemMessage
-{
-public:
-	typedef std::unique_ptr<SystemMessage> unique_ptr;
-	
-public:
-	SystemMessage(const std::string &_command, const std::vector<std::string> &_parameters)
-		: m_Command(_command), m_Parameters(_parameters) {}
-	
-	inline const std::string &command() const { return m_Command; }
-	inline const std::vector<std::string> &parameters() const { return m_Parameters; }
-	inline auto size() const -> decltype(parameters().size()) { return m_Parameters.size(); }
-	inline std::string parameter(unsigned int _index) const { return m_Parameters[_index]; }
-	
-	static std::string serialise(const SystemMessage &_message)
-	{
-		std::string result = "#" + _message.command() + ":";
-		for(unsigned int index = 0; index < _message.size(); index ++)
-		{
-			if(index != 0) result += ",";
-			result += _message.parameter(index);
-		}
-		result += "\r\n";
-		return result;
-	}
-	
-	static SystemMessage deserialise(const std::string &_message)
-	{
-		std::vector<std::string> parameters;
-		std::string command = "";
-		
-		if(_message[0] != '#') throw std::runtime_error("expected mark at start of message");
-		
-		auto command_end = _message.find(':');
-		
-		if(command_end != std::string::npos)
-		{
-			command = _message.substr(1, command_end - 1);
-			
-			auto last_position = command_end + 1;
-			while(true)
-			{
-				auto parameter_end = _message.find(',', last_position);
-				auto length = parameter_end - last_position;
-				
-				if(parameter_end != std::string::npos)
-				{
-					if(length > 0)
-					{
-						parameters.push_back(_message.substr(last_position, length));
-					}
-					last_position = parameter_end + 1;
-				}
-				else
-				{
-					if(length > 0)
-					{
-						parameters.push_back(_message.substr(last_position));
-					}
-					break;
-				}
-			}
-		}
-		else
-		{
-			command = _message.substr(1);
-		}
-		
-		return SystemMessage(command, parameters);
-	}
-	
-private:
-	std::string m_Command;
-	std::vector<std::string> m_Parameters;
-};
+using boost::asio::ip::tcp;
+using spacesim::networking::SystemMessage;
 
 class SimObserver
 {
