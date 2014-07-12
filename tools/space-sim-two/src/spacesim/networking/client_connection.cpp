@@ -4,8 +4,11 @@ namespace spacesim
 {
 	namespace networking
 	{
-		ClientConnection::ClientConnection(boost::asio::ip::tcp::socket _socket, ClientPool &_clients)
-			: m_Socket(std::move(_socket)), m_Clients(_clients), m_ClientID(ClientPool::InvalidID)
+		ClientConnection::ClientConnection(boost::asio::ip::tcp::socket _socket, sim::Simulation &_simulation, ClientPool &_clients)
+			: m_Socket(std::move(_socket)),
+			m_Clients(_clients),
+			m_Simulation(_simulation),
+			m_ClientID(ClientPool::InvalidID)
 		{
 		}
 		

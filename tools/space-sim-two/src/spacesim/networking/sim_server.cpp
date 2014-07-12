@@ -4,8 +4,10 @@ namespace spacesim
 {
 	namespace networking
 	{
-		SimServer::SimServer(boost::asio::io_service& _service, int _port)
-			: m_Socket(_service), m_Acceptor(_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), _port))
+		SimServer::SimServer(boost::asio::io_service& _service, sim::Simulation &_simulation, int _port)
+			: m_Socket(_service),
+			m_Simulation(_simulation),
+			m_Acceptor(_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), _port))
 		{
 			startAccept();
 		}
@@ -17,7 +19,7 @@ namespace spacesim
 				{
 					if(!_error)
 					{
-						boost::shared_ptr<ClientConnection>(new ClientConnection(std::move(m_Socket), m_Clients))->start();
+						boost::shared_ptr<ClientConnection>(new ClientConnection(std::move(m_Socket), m_Simulation, m_Clients))->start();
 					}
 					
 					startAccept();

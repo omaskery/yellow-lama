@@ -8,7 +8,8 @@ SOURCES=\
 	src/spacesim/networking/system_message.cpp\
 	src/spacesim/networking/client_connection.cpp\
 	src/spacesim/networking/sim_server.cpp\
-	src/spacesim/sim/simulation.cpp
+	src/spacesim/sim/simulation.cpp\
+	src/spacesim/sim/entity.cpp
 
 LIBS=\
 	-lboost_system

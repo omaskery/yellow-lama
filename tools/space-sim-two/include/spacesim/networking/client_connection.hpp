@@ -11,6 +11,7 @@
 #include <list>
 
 #include "spacesim/sim/sim_observer.hpp"
+#include "spacesim/sim/simulation.hpp"
 #include "client_pool.hpp"
 
 namespace spacesim
@@ -24,7 +25,7 @@ namespace spacesim
 			typedef boost::shared_ptr<ClientConnection> shared_ptr;
 
 		public:
-			ClientConnection(boost::asio::ip::tcp::socket _socket, ClientPool &_clients);
+			ClientConnection(boost::asio::ip::tcp::socket _socket, sim::Simulation &_simulation, ClientPool &_clients);
 
 			void notify(const SystemMessage &_message) override;
 			void start();
@@ -41,6 +42,7 @@ namespace spacesim
 			ClientPool &m_Clients;
 			unsigned int m_Header;
 			std::vector<char> m_Payload;
+			sim::Simulation &m_Simulation;
 			ClientPool::ClientID m_ClientID;
 			std::list<std::string> m_Messages;
 		};
