@@ -2,6 +2,8 @@
 #ifndef _INCLUDE_ENTITY_HEADER_
 #define _INCLUDE_ENTITY_HEADER_
 
+#include <memory>
+
 #include "utils/json.hpp"
 
 namespace spacesim
@@ -10,6 +12,9 @@ namespace spacesim
 	{
 		class Entity
 		{
+		public:
+			typedef std::unique_ptr<Entity> UniquePtr;
+			
 		public:
 			Entity(const std::string &_name, const std::string &_typeName);
 			inline virtual ~Entity() {}

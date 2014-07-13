@@ -3,6 +3,7 @@
 #define _INCLUDE_JSON_HEADER_
 
 #include <stdexcept>
+#include <iostream>
 #include <cstdint>
 #include <sstream>
 #include <vector>
@@ -41,6 +42,8 @@ namespace utils
 			static Object makeObject() { return Object(type::Object); }
 			static Object makeList() { return Object(type::List); }
 			
+			inline type::Type type() const { return m_Type; }
+			
 			inline std::string asString() const {
 				checkType(type::String);
 				return m_Value;
@@ -64,6 +67,16 @@ namespace utils
 			inline const Object &getField(const std::string &_name) {
 				checkType(type::Object);
 				return m_Members.find(_name)->second;
+			}
+			
+			inline void setField(const std::string &_name, const Object &_value) {
+				checkType(type::Object);
+				m_Members[_name] = _value;
+			}
+			
+			inline bool hasField(const std::string &_name) const {
+				checkType(type::Object);
+				return (m_Members.find(_name) != m_Members.end());
 			}
 			
 			template<typename T>
@@ -94,6 +107,9 @@ namespace utils
 				return m_Elements.at(_index);
 			}
 			
+			void serialise(std::ostream &_stream, int _indent = 0) const;
+			void deserialise(std::istream &_stream);
+			
 		private:
 			inline Object(type::Type _type) : m_Type(_type) {}
 			
@@ -107,6 +123,18 @@ namespace utils
 			List m_Elements;
 			Dictionary m_Members;
 		};
+		
+		inline std::ostream &operator<<(std::ostream &_stream, const Object &_object)
+		{
+			_object.serialise(_stream);
+			return _stream;
+		}
+		
+		inline std::istream &operator>>(std::istream &_stream, Object &_object)
+		{
+			_object.deserialise(_stream);
+			return _stream;
+		}
 	}
 }
 

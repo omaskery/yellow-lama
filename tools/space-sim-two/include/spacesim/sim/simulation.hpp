@@ -2,7 +2,9 @@
 #ifndef _INCLUDE_SIMULATION_HEADER_
 #define _INCLUDE_SIMULATION_HEADER_
 
+#include "entity.hpp"
 #include <string>
+#include <vector>
 
 #include "timing_utils.hpp"
 
@@ -32,6 +34,8 @@ namespace spacesim
 			RateMeasurer m_ThinkMeasurer;
 			RateController m_ThinkController;
 			RateController m_StatsController;
+			
+			std::vector<Entity::UniquePtr> m_Entities;
 		};
 	}
 }
