@@ -1,12 +1,20 @@
 #include <boost/asio.hpp>
 #include <stdexcept>
+#include <fstream>
 
 #include "spacesim/networking/sim_server.hpp"
 #include "spacesim/sim/simulation.hpp"
+#include "utils/json.hpp"
 
 int main()
 {
 	std::string savepath = "data/sim.state";
+	
+	utils::json::Object test;
+	std::ifstream f("test.json");
+	f >> test;
+	
+	std::cout << test << std::endl;
 	
 	try
 	{

@@ -33,6 +33,14 @@ namespace utils
 			};
 		}
 		
+		class Parser
+		{
+		public:
+			Object parse(std::istream &_stream);
+			
+		private:
+		};
+		
 		class Object
 		{
 		public:
@@ -62,6 +70,30 @@ namespace utils
 			inline const List asList() const {
 				checkType(type::List);
 				return m_Elements;
+			}
+			
+			inline void append(const Object &_value) {
+				checkType(type::List);
+				m_Elements.push_back(_value);
+			}
+			
+			inline const Object &element(unsigned int _index) const {
+				checkType(type::List);
+				return m_Elements[_index];
+			}
+			
+			inline void remove(unsigned int _index) {
+				unsigned int index = 0;
+				for(auto iterator = m_Elements.begin();
+					iterator != m_Elements.end();
+					iterator ++, index++)
+				{
+					if(index == _index)
+					{
+						m_Elements.erase(iterator);
+						break;
+					}
+				}
 			}
 			
 			inline const Object &getField(const std::string &_name) {
@@ -108,7 +140,6 @@ namespace utils
 			}
 			
 			void serialise(std::ostream &_stream, int _indent = 0) const;
-			void deserialise(std::istream &_stream);
 			
 		private:
 			inline Object(type::Type _type) : m_Type(_type) {}
@@ -132,7 +163,8 @@ namespace utils
 		
 		inline std::istream &operator>>(std::istream &_stream, Object &_object)
 		{
-			_object.deserialise(_stream);
+			Parser parser;
+			_object = parser.parse(_stream);
 			return _stream;
 		}
 	}

@@ -8,7 +8,7 @@ namespace utils
 		{
 			const std::string Indent = "  ";
 			
-			auto indent = [&](int _amount){
+			auto indent = [&](int _amount) {
 				for(int i = 0; i < _amount; i++)
 				{
 					_stream << Indent;
@@ -16,7 +16,6 @@ namespace utils
 			};
 			
 			auto writeValue = [&](){
-				indent(_indent);
 				_stream << m_Value;
 			};
 			
@@ -32,7 +31,7 @@ namespace utils
 				} break;
 			case type::String:
 				{
-					writeValue();
+					_stream << '"' << m_Value << '"';
 				} break;
 			case type::Boolean:
 				{
@@ -40,12 +39,11 @@ namespace utils
 				} break;
 			case type::List:
 				{
-					indent(_indent); _stream << "[" << std::endl;
+					_stream << "[" << std::endl;
 					
 					for(int index = 0; index < m_Elements.size(); index++)
 					{
-						if(index > 0) _stream << ",";
-						_stream << std::endl;
+						if(index > 0) _stream << "," << std::endl;
 						
 						m_Elements[index].serialise(_stream, _indent + 1);
 					}
@@ -54,16 +52,18 @@ namespace utils
 				} break;
 			case type::Object:
 				{
-					indent(_indent); _stream << "{" << std::endl;
+					_stream << "{" << std::endl;
 					
 					for(auto iterator = m_Members.begin(); iterator != m_Members.end(); iterator++)
 					{
-						if(iterator != m_Members.begin()) _stream << ",";
-						_stream << std::endl;
+						if(iterator != m_Members.begin()) _stream << "," << std::endl;
+						
+						indent(_indent + 1); _stream << '"' << iterator->first << '"' << ": ";
 						
 						iterator->second.serialise(_stream, _indent + 1);
 					}
 					
+					_stream << std::endl;
 					indent(_indent); _stream << "}";
 				} break;
 			default:
@@ -71,11 +71,6 @@ namespace utils
 					// can't do anything here :x
 				} break;
 			}
-		}
-		
-		void Object::deserialise(std::istream &_stream)
-		{
-			
 		}
 	}
 }
