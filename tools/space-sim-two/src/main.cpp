@@ -10,12 +10,6 @@ int main()
 {
 	std::string savepath = "data/sim.state";
 	
-	utils::json::Object test;
-	std::ifstream f("test.json");
-	f >> test;
-	
-	std::cout << test << std::endl;
-	
 	try
 	{
 		boost::asio::io_service io_service;

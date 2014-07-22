@@ -36,9 +36,33 @@ namespace utils
 		class Parser
 		{
 		public:
-			Object parse(std::istream &_stream);
+			Parser(std::istream &_stream);
+			
+			Object parse();
 			
 		private:
+			void parseValue(Object &_value);
+			void parseObject(Object &_object);
+			void parseString(Object &_string);
+			void parseNumeric(Object &_numeric);
+			void parseList(Object &_list);
+			void parseBool(Object &_boolean);
+			
+			void expect(const std::string &_expected);
+			void skipWhitespace();
+			
+			char peek();
+			char get();
+			
+			bool isEnd() const;
+			
+			void error(const std::string &_message);
+			
+		private:
+			std::istream &m_Stream;
+			
+			unsigned int m_Line;
+			unsigned int m_Char;
 		};
 		
 		class Object
@@ -46,6 +70,28 @@ namespace utils
 		public:
 			inline Object() : m_Type(type::Invalid) {}
 			inline Object(const std::string &_value) : m_Value(_value), m_Type(type::String) {}
+			inline Object(const char *_value) : m_Value(_value), m_Type(type::String) {}
+			
+			template<typename T>
+			inline Object(const T &_value, type::Type _type)
+				: m_Type(_type), m_Value(fromType<T>(_value))
+			{
+			}
+			
+			inline Object(int _value)
+				: m_Type(type::Integer), m_Value(fromType(_value))
+			{
+			}
+			
+			inline Object(double _value)
+				: m_Type(type::Decimal), m_Value(fromType(_value))
+			{
+			}
+			
+			inline Object(bool _value)
+				: m_Type(type::Boolean), m_Value(_value ? "true" : "false")
+			{
+			}
 			
 			static Object makeObject() { return Object(type::Object); }
 			static Object makeList() { return Object(type::List); }
@@ -82,6 +128,11 @@ namespace utils
 				return m_Elements[_index];
 			}
 			
+			inline unsigned int size() const {
+				checkType(type::List);
+				return m_Elements.size();
+			}
+			
 			inline void remove(unsigned int _index) {
 				unsigned int index = 0;
 				for(auto iterator = m_Elements.begin();
@@ -109,6 +160,18 @@ namespace utils
 			inline bool hasField(const std::string &_name) const {
 				checkType(type::Object);
 				return (m_Members.find(_name) != m_Members.end());
+			}
+			
+			inline std::vector<std::string> fields() const {
+				checkType(type::Object);
+				
+				std::vector<std::string> result;
+				for(auto iter = m_Members.begin(); iter != m_Members.end(); iter++)
+				{
+					result.push_back(iter->first);
+				}
+				
+				return result;
 			}
 			
 			template<typename T>
@@ -144,6 +207,14 @@ namespace utils
 		private:
 			inline Object(type::Type _type) : m_Type(_type) {}
 			
+			template<typename T>
+			std::string fromType(const T &_value)
+			{
+				std::stringstream convert;
+				convert << _value;
+				return convert.str();
+			}
+			
 			void checkType(type::Type _type) const { if(m_Type != _type) throw std::runtime_error("json type mismatch"); }
 		
 		private:
@@ -163,8 +234,8 @@ namespace utils
 		
 		inline std::istream &operator>>(std::istream &_stream, Object &_object)
 		{
-			Parser parser;
-			_object = parser.parse(_stream);
+			Parser parser(_stream);
+			_object = parser.parse();
 			return _stream;
 		}
 	}
