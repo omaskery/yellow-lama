@@ -4,15 +4,15 @@ namespace spacesim
 {
 	namespace sim
 	{
-		Entity::Entity(const std::string &_name, const std::string &_typeName)
-			: m_Name(_name), m_TypeName(_typeName)
+		Entity::Entity(const std::string &_name, const std::string &_category)
+			: m_Name(_name), m_Category(_category)
 		{
 		}
 		
 		void Entity::load(const utils::json::Object &_blob)
 		{
 			m_Name = _blob["name"].asString();
-			m_TypeName = _blob["type"].asString();
+			m_Category = _blob["category"].asString();
 		}
 		
 		utils::json::Object Entity::save() const
@@ -22,7 +22,7 @@ namespace spacesim
 			auto blob = Object::makeObject();
 			
 			blob["name"] = Object(m_Name);
-			blob["type"] = Object(m_TypeName);
+			blob["category"] = Object(m_Category);
 			
 			return blob;
 		}

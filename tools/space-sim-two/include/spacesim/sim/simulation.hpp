@@ -2,7 +2,9 @@
 #ifndef _INCLUDE_SIMULATION_HEADER_
 #define _INCLUDE_SIMULATION_HEADER_
 
+#include "module.hpp"
 #include "entity.hpp"
+#include "ithink.hpp"
 #include <string>
 #include <vector>
 
@@ -22,6 +24,9 @@ namespace spacesim
 			
 			void setRates(unsigned int _rate, double _deltaTime);
 			
+			void add(Module::UniquePtr _module);
+			void add(Entity::UniquePtr _entity);
+			
 			void load(const std::string &_filepath);
 			void save(const std::string &_filepath) const;
 			
@@ -35,7 +40,11 @@ namespace spacesim
 			RateController m_ThinkController;
 			RateController m_StatsController;
 			
+			std::vector<IThink*> m_ThinkingModules;
 			std::vector<Entity::UniquePtr> m_Entities;
+			std::map<std::string, Module::UniquePtr> m_Modules;
+			
+			std::map<std::string, EntityLoader> m_Loaders;
 		};
 	}
 }

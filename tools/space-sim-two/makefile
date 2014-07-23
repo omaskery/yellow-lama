@@ -10,6 +10,7 @@ SOURCES=\
 	src/spacesim/networking/sim_server.cpp\
 	src/spacesim/sim/simulation.cpp\
 	src/spacesim/sim/entity.cpp\
+	src/spacesim/sim/module.cpp\
 	src/utils/json.cpp
 
 LIBS=\
