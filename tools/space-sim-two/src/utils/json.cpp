@@ -43,7 +43,7 @@ namespace utils
 			{
 				parseString(_value);
 			}
-			else if(isdigit(Next))
+			else if(isdigit(Next) || Next == '+' || Next == '-')
 			{
 				parseNumeric(_value);
 			}
@@ -104,19 +104,37 @@ namespace utils
 		void Parser::parseNumeric(Object &_numeric)
 		{
 			std::string contents = "";
+			bool first = true;
 			bool seperator = false;
+			bool scientific = false;
 			
 			skipWhitespace();
 			
-			while(isdigit(peek()) || (peek() == '.' && !seperator))
+			auto validCharacter = [&](char _char)
+			{
+				if(isdigit(_char)) return true;
+				if(first && (_char == '+' || _char == '-')) return true;
+				if(!seperator && _char == '.') return true;
+				if(!scientific && (_char == 'e' || _char == 'E')) return true;
+				if(scientific && (_char == '+' || _char == '-')) return true;
+				return false;
+			};
+			
+			while(validCharacter(peek()))
 			{
 				if(peek() == '.')
-					seperator = false;
-					
+				{
+					seperator = true;
+				}
+				else if(peek() == 'e' || peek() == 'E')
+				{
+					scientific = true;
+				}
+				
 				contents += get();
 			}
 			
-			if(seperator)
+			if(seperator || scientific)
 			{
 				_numeric = Object(contents, type::Decimal);
 			}
@@ -164,7 +182,7 @@ namespace utils
 		{
 			skipWhitespace();
 			
-			std::cout << "expecting '" << _expected << "'" << std::endl;
+			//std::cout << "expecting '" << _expected << "'" << std::endl;
 			
 			for(char letter : _expected)
 			{
@@ -186,7 +204,7 @@ namespace utils
 			
 			if(skipped > 0)
 			{
-				std::cout << "skipped " << skipped << " whitespace chars" << std::endl;
+				//std::cout << "skipped " << skipped << " whitespace chars" << std::endl;
 			}
 		}
 		
@@ -194,7 +212,7 @@ namespace utils
 		{
 			char result = m_Stream.peek();
 			
-			std::cout << "peeked '" << (result == '\n' ? "\\n" : std::string(&result, 1)) << "'" << std::endl;
+			//std::cout << "peeked '" << (result == '\n' ? "\\n" : std::string(&result, 1)) << "'" << std::endl;
 			
 			return result;
 		}
@@ -210,9 +228,11 @@ namespace utils
 				m_Line ++;
 			}
 			
+			/*
 			std::cout << "[" << m_Line << ":" << m_Char << "] got: '"
 				<< (result == '\n' ? "\\n" : std::string(&result, 1)) << "'"
 				<< std::endl;
+			*/
 			
 			return result;
 		}

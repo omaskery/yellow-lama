@@ -14,6 +14,7 @@ namespace spacesim
 		{
 		public:
 			typedef std::unique_ptr<Entity> UniquePtr;
+			typedef std::function<Entity::UniquePtr(const utils::json::Object &_blob)> Loader;
 			
 		public:
 			Entity(const std::string &_name, const std::string &_category);
@@ -29,8 +30,6 @@ namespace spacesim
 			std::string m_Name;
 			std::string m_Category;
 		};
-		
-		typedef std::function<Entity::UniquePtr(const utils::json::Object &_blob)> EntityLoader;
 	}
 }
 

@@ -26,6 +26,7 @@ namespace spacesim
 			
 			void add(Module::UniquePtr _module);
 			void add(Entity::UniquePtr _entity);
+			void add(const std::string &_name, Entity::Loader _loader);
 			
 			void load(const std::string &_filepath);
 			void save(const std::string &_filepath) const;
@@ -44,7 +45,7 @@ namespace spacesim
 			std::vector<Entity::UniquePtr> m_Entities;
 			std::map<std::string, Module::UniquePtr> m_Modules;
 			
-			std::map<std::string, EntityLoader> m_Loaders;
+			std::map<std::string, Entity::Loader> m_Loaders;
 		};
 	}
 }

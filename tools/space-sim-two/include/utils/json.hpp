@@ -98,18 +98,22 @@ namespace utils
 			
 			inline type::Type type() const { return m_Type; }
 			
+			inline bool asBoolean() const {
+				checkType(type::Boolean);
+				return (m_Value == "true" ? true : false);
+			}
+			
 			inline std::string asString() const {
-				checkType(type::String);
 				return m_Value;
 			}
 			
 			inline int asInteger() const {
-				checkType(type::Integer);
+				checkTypes({type::Integer, type::Decimal});
 				return asType<int>();
 			}
 			
 			inline double asDouble() const {
-				checkType(type::Decimal);
+				checkTypes({type::Decimal, type::Integer});
 				return asType<double>();
 			}
 			
@@ -216,6 +220,15 @@ namespace utils
 			}
 			
 			void checkType(type::Type _type) const { if(m_Type != _type) throw std::runtime_error("json type mismatch"); }
+			void checkTypes(const std::vector<type::Type> &_types) const
+			{
+				for(auto t : _types)
+				{
+					if(t == m_Type) return;
+				}
+				
+				throw std::runtime_error("json type mismatch");
+			}
 		
 		private:
 			type::Type m_Type;

@@ -11,6 +11,7 @@ SOURCES=\
 	src/spacesim/sim/simulation.cpp\
 	src/spacesim/sim/entity.cpp\
 	src/spacesim/sim/module.cpp\
+	src/spacesim/sim/physics_module.cpp\
 	src/utils/json.cpp
 
 LIBS=\

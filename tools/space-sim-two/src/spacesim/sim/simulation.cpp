@@ -43,10 +43,20 @@ namespace spacesim
 			m_Entities.push_back(std::move(_entity));
 		}
 		
+		void Simulation::add(const std::string &_name, Entity::Loader _loader)
+		{
+			m_Loaders[_name] = _loader;
+		}
+		
 		void Simulation::load(const std::string &_filepath)
 		{
 			std::ifstream input(_filepath.c_str());
 			utils::json::Object blob;
+			
+			if(!input)
+			{
+				return;
+			}
 			
 			input >> blob;
 			
