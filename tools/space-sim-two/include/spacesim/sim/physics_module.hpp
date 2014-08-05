@@ -10,9 +10,9 @@ namespace spacesim
 {
 	namespace sim
 	{
-		typedef float PhysicsUnit;
+		typedef double PhysicsUnit;
 		
-		typedef utils::Vector<PhysicsUnit> PhysicsVector;
+		typedef utils::Vector<PhysicsUnit, 3> PhysicsVector;
 		typedef PhysicsVector Position;
 		typedef PhysicsVector Velocity;
 		typedef PhysicsVector Force;
@@ -47,7 +47,7 @@ namespace spacesim
 		public:
 			PhysicalBody(const std::string &_name) : Entity(_name, "physical-entity"), m_Fixed(false) {}
 			
-			inline void accelerate(Force _force) { if(!m_Fixed) m_Velocity += (_force / m_Mass); }
+			inline void accelerate(const Force &_force) { if(!m_Fixed) m_Velocity += (_force / m_Mass); }
 			void updatePhysics();
 			
 			inline void setFixed(bool _fixed) { m_Fixed = _fixed; }

@@ -28,56 +28,60 @@ int main()
 	
 	std::cout << "starting server" << std::endl;
 	
-	try
-	{
-		boost::asio::io_service io_service;
-		spacesim::sim::Simulation simulation;
-		spacesim::networking::SimServer server(io_service, simulation, 40000);
-		
-		std::unique_ptr<spacesim::sim::PhysicsModule> physics(new spacesim::sim::PhysicsModule());
-		
-		simulation.add(std::move(physics));
+	boost::asio::io_service io_service;
+	spacesim::sim::Simulation simulation;
+	spacesim::networking::SimServer server(io_service, simulation, 40000);
+	
+	std::unique_ptr<spacesim::sim::PhysicsModule> physics(new spacesim::sim::PhysicsModule());
+	
+	simulation.add(std::move(physics));
+	
+	simulation.setRates(1, 1.0 / spacesim::sim::Simulation::DefaultRate);
 
-		if(false)
+	if(false)
+	{
+		simulation.load(savepath);
+	}
+	else
+	{
+		utils::json::Object planets;
+		std::ifstream planetFile("data/planets.json");
+		planetFile >> planets;
+		
+		for(const auto &planet : planets.fields())
 		{
-			simulation.load(savepath);
-		}
-		else
-		{
-			utils::json::Object planets;
-			std::ifstream planetFile("data/planets.json");
-			planetFile >> planets;
+			spacesim::sim::PhysicalBody::UniquePtr entity(new spacesim::sim::PhysicalBody(planet));
 			
-			for(const auto &planet : planets.fields())
+			const auto &blob = planets[planet];
+			
+			auto pos = spacesim::sim::VectorFromJson(blob["pos"]);
+			auto vel = spacesim::sim::VectorFromJson(blob["vel"]);
+			auto radius = blob["radius"].asDouble();
+			auto mass = blob["mass"].asDouble();
+			
+			std::cout << "loaded planet '" << planet << "' " << pos << ", " << vel << ", " << radius << ", " << mass << std::endl;
+			
+			entity->setPosition(pos);
+			entity->setVelocity(vel);
+			entity->setRadius(radius);
+			entity->setMass(mass);
+			
+			if(entity->name() == "Sol")
 			{
-				spacesim::sim::PhysicalBody::UniquePtr entity(new spacesim::sim::PhysicalBody(planet));
-				
-				entity->setPosition(spacesim::sim::VectorFromJson(planets[planet]["pos"]));
-				entity->setVelocity(spacesim::sim::VectorFromJson(planets[planet]["vel"]));
-				entity->setRadius(planets[planet]["radius"].asDouble());
-				entity->setMass(planets[planet]["mass"].asDouble());
-				
-				if(entity->name() == "Sun")
-				{
-					entity->setFixed(true);
-				}
-				
-				simulation.add(std::move(entity));
+				entity->setFixed(true);
 			}
+			
+			simulation.add(std::move(entity));
 		}
-
-		while(!kill_flag)
-		{
-			io_service.poll();
-			simulation.update();
-		}
-
-		simulation.save(savepath);
 	}
-	catch (std::exception& e)
+
+	while(!kill_flag)
 	{
-		std::cerr << e.what() << std::endl;
+		io_service.poll();
+		simulation.update();
 	}
+
+	simulation.save(savepath);
 	
 	std::cout << "\rstopping server" << std::endl;
 	

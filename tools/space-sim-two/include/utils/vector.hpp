@@ -3,6 +3,7 @@
 #define _INCLUDE_VECTOR_HEADER_
 
 #include <stdexcept>
+#include <ostream>
 #include <cmath>
 
 namespace utils
@@ -84,6 +85,10 @@ namespace utils
 		
 		inline MyType normalised() const {
 			return *this / magnitude();
+		}
+		
+		void serialise(std::ostream &_stream) const {
+			_stream << "(" << m_X << ", " << m_Y << ")";
 		}
 		
 	private:
@@ -171,9 +176,20 @@ namespace utils
 			return *this / magnitude();
 		}
 		
+		void serialise(std::ostream &_stream) const {
+			_stream << "(" << m_X << ", " << m_Y << ", " << m_Z << ")";
+		}
+		
 	private:
 		T m_X, m_Y, m_Z;
 	};
+	
+	template<typename T, unsigned int N>
+	std::ostream &operator<<(std::ostream &_stream, const Vector<T, N> &_vector)
+	{
+		_vector.serialise(_stream);
+		return _stream;
+	}
 };
 
 #endif
