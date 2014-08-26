@@ -1,6 +1,195 @@
 {
   "entities": [
-
+    {
+      "category": "physical-entity",
+      "name": "Earth",
+      "physical": {
+        "fixed": false,
+        "mass": 5.97219e+24,
+        "position": {
+          "x": 1.67868e+11,
+          "y": -184391,
+          "z": 0
+        },
+        "radius": 6.3781e+06,
+        "velocity": {
+          "x": 5.14801e+09,
+          "y": -32184.9,
+          "z": 0
+        }
+      }
+    },
+    {
+      "category": "physical-entity",
+      "name": "Earth.Moon",
+      "physical": {
+        "fixed": false,
+        "mass": 7.34767e+22,
+        "position": {
+          "x": 1.6823e+11,
+          "y": -190783,
+          "z": 0
+        },
+        "radius": 1.7374e+06,
+        "velocity": {
+          "x": 5.14181e+09,
+          "y": -33321,
+          "z": 0
+        }
+      }
+    },
+    {
+      "category": "physical-entity",
+      "name": "Jupiter",
+      "physical": {
+        "fixed": false,
+        "mass": 1.898e+27,
+        "position": {
+          "x": 7.82075e+11,
+          "y": -78459.8,
+          "z": 0
+        },
+        "radius": 6.9911e+07,
+        "velocity": {
+          "x": 1.02086e+09,
+          "y": -13102.7,
+          "z": 0
+        }
+      }
+    },
+    {
+      "category": "physical-entity",
+      "name": "Mars",
+      "physical": {
+        "fixed": false,
+        "mass": 6.4174e+23,
+        "position": {
+          "x": 2.40018e+11,
+          "y": -146509,
+          "z": 0
+        },
+        "radius": 3.3895e+06,
+        "velocity": {
+          "x": 3.44091e+09,
+          "y": -24955.5,
+          "z": 0
+        }
+      }
+    },
+    {
+      "category": "physical-entity",
+      "name": "Mercury",
+      "physical": {
+        "fixed": false,
+        "mass": 3.285e+23,
+        "position": {
+          "x": 1.01271e+11,
+          "y": -329640,
+          "z": 0
+        },
+        "radius": 2.44e+06,
+        "velocity": {
+          "x": 1.15511e+10,
+          "y": -64683.1,
+          "z": 0
+        }
+      }
+    },
+    {
+      "category": "physical-entity",
+      "name": "Neptune",
+      "physical": {
+        "fixed": false,
+        "mass": 1.024e+26,
+        "position": {
+          "x": 4.50362e+12,
+          "y": -32581.2,
+          "z": 0
+        },
+        "radius": 2.4622e+07,
+        "velocity": {
+          "x": 1.77073e+08,
+          "y": -5430.53,
+          "z": 0
+        }
+      }
+    },
+    {
+      "category": "physical-entity",
+      "name": "Saturn",
+      "physical": {
+        "fixed": false,
+        "mass": 5.683e+26,
+        "position": {
+          "x": 1.43495e+12,
+          "y": -58101.8,
+          "z": 0
+        },
+        "radius": 5.8232e+07,
+        "velocity": {
+          "x": 5.56422e+08,
+          "y": -9689.36,
+          "z": 0
+        }
+      }
+    },
+    {
+      "category": "physical-entity",
+      "name": "Sol",
+      "physical": {
+        "fixed": true,
+        "mass": 1.9891e+30,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "radius": 6.955e+08,
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      }
+    },
+    {
+      "category": "physical-entity",
+      "name": "Uranus",
+      "physical": {
+        "fixed": false,
+        "mass": 8.681e+25,
+        "position": {
+          "x": 2.87797e+12,
+          "y": -40803.8,
+          "z": 0
+        },
+        "radius": 2.5362e+07,
+        "velocity": {
+          "x": 2.7716e+08,
+          "y": -6801.63,
+          "z": 0
+        }
+      }
+    },
+    {
+      "category": "physical-entity",
+      "name": "Venus",
+      "physical": {
+        "fixed": false,
+        "mass": 4.867e+24,
+        "position": {
+          "x": 1.33063e+11,
+          "y": -222387,
+          "z": 0
+        },
+        "radius": 6.052e+06,
+        "velocity": {
+          "x": 6.92709e+09,
+          "y": -40054.6,
+          "z": 0
+        }
+      }
+    }
   ],
   "modules": [
     {

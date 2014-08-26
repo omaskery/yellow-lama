@@ -1,3 +1,5 @@
 material/conceptual/xtreme-kettlesim/exercise*/kettlesim
 *.pyc
 *~
+.idea
+sim.state
