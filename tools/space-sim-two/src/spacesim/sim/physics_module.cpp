@@ -96,8 +96,8 @@ namespace spacesim
 			
 			auto forceVector = delta.normalised() * force;
 			
-			_a->accelerate(forceVector);
-			_b->accelerate(forceVector * -1);
+			_a->accelerate(forceVector * -1);
+			_b->accelerate(forceVector);
 		}
 	}
 }

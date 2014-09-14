@@ -36,7 +36,7 @@ int main()
 	
 	simulation.add(std::move(physics));
 	
-	simulation.setRates(1, 1.0 / spacesim::sim::Simulation::DefaultRate);
+	//simulation.setRates(1, 1.0 / spacesim::sim::Simulation::DefaultRate);
 
 	if(false)
 	{
