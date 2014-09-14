@@ -42,7 +42,7 @@ namespace spacesim
             void onDisconnect();
         
         private:
-            void onGetPlanets(const SystemMessage &_message);
+            void onGetEntity(const SystemMessage &_message);
 
         private:
             boost::asio::ip::tcp::socket m_Socket;

@@ -10,12 +10,15 @@ namespace spacesim
             m_Simulation(_simulation),
             m_ClientID(ClientPool::InvalidID)
         {
-            m_Handlers["get-planets"] = [this](const SystemMessage &_message) { this->onGetPlanets(_message); };
+            m_Handlers["get-entity"] = [this](const SystemMessage &_message) { this->onGetEntity(_message); };
         }
         
         void ClientConnection::notify(const SystemMessage &_message)
         {
             auto message = SystemMessage::serialise(_message);
+            unsigned int length = message.size();
+            
+            message = std::string((const char*)&length, sizeof(length)) + message;
 
             m_Messages.push_back(message);
 
@@ -102,7 +105,7 @@ namespace spacesim
         
         void ClientConnection::handleMessage(const SystemMessage &_message)
         {
-            std::cout << "[" << m_ClientID << "] '" << SystemMessage::serialise(_message) << "'" << std::endl;
+            //std::cout << "[" << m_ClientID << "] '" << SystemMessage::serialise(_message) << "'" << std::endl;
             
             auto found = m_Handlers.find(_message.command());
             if(found != m_Handlers.end())
@@ -138,9 +141,36 @@ namespace spacesim
             m_Clients.remove(shared_from_this());
         }
         
-        void ClientConnection::onGetPlanets(const SystemMessage &_message)
+        void ClientConnection::onGetEntity(const SystemMessage &_message)
         {
+            auto entity_list = utils::json::Object::makeList();
+            auto args = _message.parameters();
             
+            std::vector<sim::Entity*> entities;
+            
+            if(args.type() == utils::json::type::Object && args.hasField("name"))
+            {
+                entities = m_Simulation.subset([&](const sim::Entity &_entity){
+                    return (_entity.name() == args["name"].asString());
+                });
+            }
+            else if(args.type() == utils::json::type::Object && args.hasField("category"))
+            {
+                entities = m_Simulation.subset([&](const sim::Entity &_entity){
+                    return (_entity.category() == args["category"].asString());
+                });
+            }
+            else
+            {
+                entities = m_Simulation.subset([](const sim::Entity &){ return true; });
+            }
+            
+            for(auto entity : entities)
+            {
+                entity_list.append(entity->save());
+            }
+            
+            notify(SystemMessage("entity", entity_list));
         }
     }
 }

@@ -4,14 +4,14 @@
 
 namespace spacesim
 {
-	namespace sim
-	{
-		class IThink
-		{
-		public:
-			virtual void think() = 0;
-		};
-	}
+    namespace sim
+    {
+        class IThink
+        {
+        public:
+            virtual void think(double _dt) = 0;
+        };
+    }
 }
 
 #endif

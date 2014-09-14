@@ -32,6 +32,7 @@ class Client(object):
         self.socket.connect(self.target)
         self.socket.settimeout(1.0)
         self.thread = threading.Thread(target=self.listen_thread, name="listen-thread")
+        self.rx = b""
         
         self.running = True
         self.thread.start()
@@ -39,11 +40,22 @@ class Client(object):
     def listen_thread(self):
         while self.running:
             try:
-                read = self.socket.recv(2048)
-                if len(read) > 0:
-                    print("\rrx: ", read.decode(), "\n> ", end='')
-                else:
+                data = self.socket.recv(2048)
+                if len(data) < 1:
                     self.stop()
+                else:
+                    self.rx += data
+                    if len(self.rx) >= 4:
+                        header = self.rx[0:4]
+                        length = 0
+                        length += (header[3] << 24)
+                        length += (header[2] << 16)
+                        length += (header[1] <<  8)
+                        length += (header[0] <<  0)
+                        if len(self.rx) >= length + 4:
+                            message = self.rx[4:length+4].decode()
+                            self.rx = self.rx[length+4:]
+                            print("\rrx [%s bytes]: " % length, message, "\n> ", end='')
             except socket.timeout:
                 pass
     
