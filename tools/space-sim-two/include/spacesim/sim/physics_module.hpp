@@ -45,7 +45,7 @@ namespace spacesim
             typedef std::unique_ptr<PhysicalBody> UniquePtr;
             
         public:
-            PhysicalBody(const std::string &_name) : Entity(_name, "physical-entity"), m_Fixed(false) {}
+            inline PhysicalBody(const std::string &_name) : Entity(_name, "physical-entity"), m_Fixed(false) {}
             
             inline void accelerate(const Force &_force, double _dt) { if(!m_Fixed) m_Velocity += (_force / m_Mass) * _dt; }
             void updatePhysics(double _dt);
