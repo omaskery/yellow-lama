@@ -38,7 +38,7 @@ int main()
     
     //simulation.setRates(1, 1.0 / spacesim::sim::Simulation::DefaultRate); // one tick per sec at normal speed
     //simulation.setRates(spacesim::sim::Simulation::DefaultRate, 1E-9); // slow motion
-    simulation.setRates(1000, 1E3); // MEGA fast forward
+    //simulation.setRates(300000, 1E3); // MEGA fast forward
 
     if(false)
     {

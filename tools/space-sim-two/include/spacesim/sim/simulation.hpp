@@ -17,7 +17,7 @@ namespace spacesim
         class Simulation
         {
         public:
-            static const unsigned int DefaultRate = 100;
+            static const unsigned int DefaultRate = 100000;
             
         public:
             Simulation();
